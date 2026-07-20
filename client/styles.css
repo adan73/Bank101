@@ -1,0 +1,126 @@
+body{
+
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f7fb;
+
+}
+
+/* LOGIN */
+
+.login-body{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+
+}
+
+.login-card{
+
+    width:420px;
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:15px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+}
+
+.logo{
+
+    text-align:center;
+
+    color:#0d6efd;
+
+    font-weight:bold;
+
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:gray;
+
+    margin-bottom:30px;
+
+}
+
+/* NAVBAR */
+
+.navbar{
+
+    background:#0d6efd;
+
+}
+
+.navbar-brand{
+
+    font-size:28px;
+    font-weight:bold;
+
+}
+
+/* CARDS */
+
+.custom-card{
+
+    border:none;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.balance-card{
+
+    background:#0d6efd;
+
+    color:white;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.balance-card h1{
+
+    margin-top:20px;
+
+    font-size:42px;
+
+}
+
+.form-control{
+
+    height:45px;
+
+    border-radius:10px;
+
+}
+
+.btn-primary{
+
+    height:45px;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+}
+
+.table{
+
+    margin-top:20px;
+
+}
