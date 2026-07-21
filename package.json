@@ -10,8 +10,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "mongodb": "^6.21.0"
+    "express-session": "^1.19.0",
+    "mongodb": "^6.21.0",
+    "mongoose": "^9.8.0"
   }
 }

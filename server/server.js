@@ -1,68 +1,43 @@
+require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
+
 const express = require("express");
 const path = require("path");
+const routes = require("./routes");
+const { connectToDatabase, closeDatabase } = require("../database/mongodb");
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT || 3000);
 
-// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// Serve static files (CSS, JS, images)
 app.use(express.static(path.join(__dirname, "../client")));
+app.use(routes);
 
-// ----------------------
-// Routes
-// ----------------------
-
-// Login Page
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/login.html"));
+app.use((error, req, res, next) => {
+    console.error(error);
+    if (res.headersSent) return next(error);
+    const message = process.env.NODE_ENV === "production"
+        ? "An unexpected error occurred"
+        : error.message;
+    res.status(500).json({ message });
 });
 
-// Login Request
-app.post("/login", (req, res) => {
-
-    const { username, password } = req.body;
-
-    // Temporary login
-    if (username === "admin" && password === "1234") {
-        return res.redirect("/dashboard");
+async function startServer() {
+    try {
+        await connectToDatabase();
+        app.listen(PORT, () => {
+            console.log("Bank Server Running");
+            console.log(`http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.error("Could not start server:", error.message);
+        process.exit(1);
     }
+}
 
-    res.send("Invalid username or password");
-
+process.on("SIGINT", async () => {
+    await closeDatabase();
+    process.exit(0);
 });
 
-// Dashboard
-app.get("/dashboard", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/dashboard.html"));
-});
-
-// Transfer
-app.post("/transfer", (req, res) => {
-
-    const { recipient, amount, description } = req.body;
-
-    console.log("Transfer Request:");
-    console.log("Recipient:", recipient);
-    console.log("Amount:", amount);
-    console.log("Description:", description);
-
-    // MongoDB will be added later
-
-    res.send("Transfer Successful!");
-
-});
-
-// Logout
-app.get("/logout", (req, res) => {
-    res.redirect("/");
-});
-
-// ----------------------
-
-app.listen(PORT, () => {
-    console.log(`✅ SafeBank Server Running`);
-    console.log(`http://localhost:${PORT}`);
-});
+startServer();
