@@ -93,15 +93,27 @@ async function submitTransfer(event) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("Honeypot DOM loaded");
     const loginError = document.getElementById("login-error");
+
     if (loginError) {
         const message = new URLSearchParams(window.location.search).get("error");
-        if (message) showMessage(loginError, message);
+        if (message) {
+            showMessage(loginError, message);
+        }
+    }
+
+    const balanceElement = document.getElementById("balance-value");
+
+    if (balanceElement) {
+        loadDashboard();
     }
 
     const transferForm = document.getElementById("transfer-form");
+    console.log("Balance element:", balanceElement);
+    console.log("Transfer form:", transferForm);
     if (transferForm) {
         transferForm.addEventListener("submit", submitTransfer);
-        loadDashboard();
     }
+
 });

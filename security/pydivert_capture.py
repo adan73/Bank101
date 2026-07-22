@@ -1,7 +1,7 @@
 import pydivert
 from router import handle_request
 
-FILTER = "tcp.DstPort == 3000"
+FILTER = "tcp.DstPort == 8000 and tcp.PayloadLength > 0"
 
 
 def extract_request(packet):
@@ -22,14 +22,15 @@ def start_capture():
     print("[+] PyDivert Started")
     print("[+] Listening on port 3000")
 
-    with pydivert.WinDivert(FILTER) as w:
+    with pydivert.WinDivert(FILTER) as windivert:
 
-        for packet in w:
+        for packet in windivert:
+            print(
+                f"Captured {packet.src_addr}:{packet.src_port} "
+                f"-> {packet.dst_addr}:{packet.dst_port}"
+            )
 
-            request = extract_request(packet)
-
-            handle_request(request, w)
-
+            windivert.send(packet)
 
 if __name__ == "__main__":
     start_capture()
