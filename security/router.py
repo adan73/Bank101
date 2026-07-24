@@ -26,14 +26,14 @@ def handle_request(request, windivert):
 
     decision = analyze(request)
 
-    if decision == "ALLOW":
+    if decision["action"] == "ALLOW":
 
         forward_to_bank(request["packet"], windivert)
 
-    elif decision == "HONEYPOT":
+    elif decision["action"] == "HONEYPOT":
 
         forward_to_honeypot(request["packet"], windivert)
 
-    elif decision == "BLOCK":
+    elif decision["action"] == "BLOCK":
 
         drop_request()

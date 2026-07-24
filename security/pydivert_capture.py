@@ -30,7 +30,8 @@ def start_capture():
                 f"-> {packet.dst_addr}:{packet.dst_port}"
             )
 
-            windivert.send(packet)
+            request = extract_request(packet)
+            handle_request(request, windivert)
 
 if __name__ == "__main__":
     start_capture()

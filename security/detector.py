@@ -1,10 +1,10 @@
 from blacklist import (
     is_blacklisted,
-    add_to_blacklist
+    add_to_blacklist,
 )
 
 from flood import detect_flood
-
+from sqli import detect_sqli
 
 def analyze(request_data):
     """
@@ -52,7 +52,23 @@ def analyze(request_data):
             "reason": reason,
             "details": flood_result
         }
+    print("RAW TEXT:")
+    print(repr(raw_text))
+    sqli_result = detect_sqli(raw_text)
 
+    if sqli_result["detected"]:
+
+        reason = f"SQL Injection detected ({sqli_result['pattern']})"
+
+        add_to_blacklist(source_ip, reason)
+
+        return {
+            "action": "HONEYPOT",
+            "attack_type": "SQL_INJECTION",
+            "source_ip": source_ip,
+            "reason": reason,
+            "details": sqli_result
+        }
 
 
     return {

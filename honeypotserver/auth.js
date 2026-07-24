@@ -79,25 +79,24 @@ async function passwordMatches(enteredPassword, storedPassword) {
 
 async function login(req, res) {
     try {
-        const username = String(req.body.username || "").trim();
-        const password = String(req.body.password || "");
+        console.log(
+            `[HONEYPOT] Fake login accepted for "${req.body.username}"`
+        );
 
         const user = await getDatabase()
             .collection(USERS_COLLECTION)
-            .findOne(usernameQuery(username));
+            .findOne({ username: "maya" });
 
-        const storedPassword = user?.password ?? user?.passwordHash ?? user?.password_hash;
-        const valid = user && await passwordMatches(password, storedPassword);
-
-        if (!valid) {
-            return res.redirect("/?error=" + encodeURIComponent("Username or password is wrong"));
+        if (!user) {
+            return res.redirect("/?error=No honeypot user found");
         }
 
         createSession(res, user._id);
+
         return res.redirect("/dashboard");
     } catch (error) {
-        console.error("Login error:", error);
-        return res.redirect("/?error=" + encodeURIComponent("Unable to log in right now"));
+        console.error(error);
+        return res.redirect("/");
     }
 }
 
