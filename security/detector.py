@@ -5,6 +5,8 @@ from blacklist import (
 
 from flood import detect_flood
 from sqli import detect_sqli
+from attack_logger import log_attack
+
 
 def analyze(request_data):
     """
@@ -18,12 +20,10 @@ def analyze(request_data):
     """
 
     raw_text = str(request_data.get("raw_text", ""))
-    text = raw_text.lower()
 
     source_ip = request_data.get("src_ip")
     method = request_data.get("method", "UNKNOWN")
     path = request_data.get("path", "")
-
 
     if is_blacklisted(source_ip):
         return {
@@ -33,10 +33,10 @@ def analyze(request_data):
             "reason": "Source IP is already blacklisted"
         }
 
-
     flood_result = detect_flood(source_ip)
 
     if flood_result["detected"]:
+
         reason = (
             f'{flood_result["request_count"]} requests received '
             f'in {flood_result["window_seconds"]} seconds; '
@@ -45,6 +45,14 @@ def analyze(request_data):
 
         add_to_blacklist(source_ip, reason)
 
+        log_attack(
+            ip=source_ip,
+            attack_type="FLOODING",
+            reason=reason,
+            method=method,
+            path=path
+        )
+
         return {
             "action": "HONEYPOT",
             "attack_type": "FLOODING",
@@ -52,8 +60,10 @@ def analyze(request_data):
             "reason": reason,
             "details": flood_result
         }
+
     print("RAW TEXT:")
     print(repr(raw_text))
+
     sqli_result = detect_sqli(raw_text)
 
     if sqli_result["detected"]:
@@ -62,6 +72,14 @@ def analyze(request_data):
 
         add_to_blacklist(source_ip, reason)
 
+        log_attack(
+            ip=source_ip,
+            attack_type="SQL_INJECTION",
+            reason=reason,
+            method=method,
+            path=path
+        )
+
         return {
             "action": "HONEYPOT",
             "attack_type": "SQL_INJECTION",
@@ -69,7 +87,6 @@ def analyze(request_data):
             "reason": reason,
             "details": sqli_result
         }
-
 
     return {
         "action": "ALLOW",
