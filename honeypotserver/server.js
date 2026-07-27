@@ -12,7 +12,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use((req, res, next) => {
-    console.log(`[HONEYPOT SERVER] ${req.method} ${req.originalUrl}`);
+    const attackerIp =
+        req.headers["x-forwarded-for"] ||
+        req.socket.remoteAddress;
+
+    console.log("--------------------------------------------------");
+    console.log(`[HONEYPOT RECEIVED] ${req.method} ${req.originalUrl}`);
+    console.log(`[HONEYPOT SOURCE IP] ${attackerIp}`);
+
+    res.on("finish", () => {
+        console.log(
+            `[HONEYPOT RESPONSE] Status ${res.statusCode} returned to Router`
+        );
+    });
+
     next();
 });
 

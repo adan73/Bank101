@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Router Security Admin</title>
+
+    <link
+        rel="stylesheet"
+        href="/admin/admin.css"
+    >
+</head>
+
+<body>
+    <main class="container">
+        <header class="page-header">
+            <div>
+                <p class="eyebrow">Bank101 Security</p>
+                <h1>Router Admin Dashboard</h1>
+
+                <p class="subtitle">
+                    Manage IP addresses that are redirected
+                    from the Asset to the Honeypot.
+                </p>
+            </div>
+
+            <button
+                id="refreshButton"
+                class="secondary-button"
+                type="button"
+            >
+                Refresh
+            </button>
+        </header>
+
+        <section
+            id="messageBox"
+            class="message hidden"
+        ></section>
+
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Add an IP to the blacklist</h2>
+
+                    <p>
+                        Requests from this IP will be redirected
+                        to the Honeypot.
+                    </p>
+                </div>
+            </div>
+
+            <form id="addIpForm" class="add-form">
+                <div class="field">
+                    <label for="ipInput">IP address</label>
+
+                    <input
+                        id="ipInput"
+                        name="ip"
+                        type="text"
+                        placeholder="For example: 10.0.0.25"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="reasonInput">Reason</label>
+
+                    <input
+                        id="reasonInput"
+                        name="reason"
+                        type="text"
+                        placeholder="Manual security block"
+                    >
+                </div>
+
+                <button
+                    class="danger-button"
+                    type="submit"
+                >
+                    Add to blacklist
+                </button>
+            </form>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Blacklisted IP addresses</h2>
+
+                    <p>
+                        Removing an IP allows it to reach
+                        the real Asset again.
+                    </p>
+                </div>
+
+                <span
+                    id="blacklistCount"
+                    class="count-badge"
+                >
+                    0 IPs
+                </span>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IP address</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="blacklistBody">
+                        <tr>
+                            <td colspan="4" class="empty-cell">
+                                Loading blacklist...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card explanation-card">
+            <h2>Traffic behavior</h2>
+
+            <div class="flow">
+                <div>
+                    <strong>Allowed IP</strong>
+                    <span>Router → Asset port 3000</span>
+                </div>
+
+                <div>
+                    <strong>Blacklisted IP</strong>
+                    <span>Router → Honeypot port 4000</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/admin/admin.js"></script>
+</body>
+</html>

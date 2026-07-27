@@ -10,6 +10,23 @@ const PORT = Number(process.env.PORT || 3000);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use((req, res, next) => {
+    const attackerIp =
+        req.headers["x-forwarded-for"] ||
+        req.socket.remoteAddress;
+
+    console.log("--------------------------------------------------");
+    console.log(`[ASSET RECEIVED] ${req.method} ${req.originalUrl}`);
+    console.log(`[ASSET SOURCE IP] ${attackerIp}`);
+
+    res.on("finish", () => {
+        console.log(
+            `[ASSET RESPONSE] Status ${res.statusCode} returned to Router`
+        );
+    });
+
+    next();
+});
 app.use(express.static(path.join(__dirname, "../client")));
 app.use(routes);
 
